@@ -57,6 +57,7 @@
 (add-to-list 'package-archives
 	     '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 (package-initialize)
+(require 'use-package)
 
 ;; auto-complete config
 (ac-config-default)
@@ -101,6 +102,10 @@
 (global-set-key [f8] 'copy-to-clipboard)
 (global-set-key [f9] 'paste-from-clipboard)
 
+;; smart scan stuff
+(use-package smartscan
+  :init (global-smartscan-mode t)
+)
 
 ;; dired setup
 (eval-after-load 'dired
