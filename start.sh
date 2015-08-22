@@ -1,5 +1,14 @@
 #! /bin/bash
 
+# uninstall old stuff 
+cp ~/.bashrc_mine ~/.bashrc_mine.bkp
+cp /dev/null ~/.bashrc_mine
+mkdir -p ~/Projects/ReposBkp/
+echo "Backup repos to make sure nothing has lost"
+cp -r ~/Projects/Repos/* ~/Projects/ReposBkp/ 2>/dev/null
+rm -rf ~/Projects/Repos/*
+# finished uninstalling
+
 std_alert(){
     echo -e "\033[0;31m${1}\033[0m" >&2
 }

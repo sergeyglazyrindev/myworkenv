@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# this is for powerline-shell python3 support
+# more here https://github.com/fellipecastro/powerline-shell/commit/49e00844774f4dd34365e9c9981526b3742c8fbd
+alias python2='python'
+
 function _update_ps1() {
     PS1="$(~/Projects/Repos/powerline-shell/powerline-shell.py $? 2> /dev/null)"
 }
