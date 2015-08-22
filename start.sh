@@ -27,7 +27,7 @@ CUR_DIR=`pwd`
 
 # keep home directory structure the same everywhere
 HOME_STRUCTURE_ARCHIVE="$CUR_DIR/home.tar.gz"
-/bin/tar --skip-old-files -xvzf $HOME_STRUCTURE_ARCHIVE --directory $HOME/
+/bin/tar --skip-old-files -xzf $HOME_STRUCTURE_ARCHIVE --directory $HOME/ 2>/dev/null
 
 # emacs beautifying
 if [[ ! -h ~/.emacs.d/init.el ]]; then
@@ -35,7 +35,7 @@ if [[ ! -h ~/.emacs.d/init.el ]]; then
    ln -s ~/Projects/Personal/myworkenv/init.el ~/.emacs.d/
 fi
 
-run_scripts_queue=(konsole powerline-shell)
+run_scripts_queue=(konsole powerline-shell gitsetup)
 for script in ${run_scripts_queue[@]}; do
     . includes/$script.sh
 done
