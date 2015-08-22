@@ -1,3 +1,6 @@
+;; please don't forget to install following packages
+;; auto-complete popup smartscan use-package
+
 ;; Bugfix until #20356 is fixed.
 (set-terminal-parameter nil 'xterm--set-selection nil)
 
