@@ -1,5 +1,6 @@
 ;; please don't forget to install following packages
-;; auto-complete popup smartscan use-package elpy js2-mode magit markdown-mode multiple-cursors paredit projectile typo yaml-mode
+;; auto-complete popup smartscan use-package elpy js2-mode magit
+;; markdown-mode multiple-cursors paredit projectile typo yaml-mode window-purpose
 ;; site-lisp
 ;; https://raw.githubusercontent.com/purcell/elisp-slime-nav/master/elisp-slime-nav.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/comint-scroll-to-bottom/master/comint-scroll-to-bottom.el
@@ -389,12 +390,13 @@ Don't pair the closing paren in :-("
   (setq ibuffer-show-empty-filter-groups nil)
   (setq ibuffer-filter-groups
 	(append
-	 (ibuffer-vc-generate-filter-groups-by-vc-root)
+;;	 (ibuffer-vc-generate-filter-groups-by-vc-root)
 	 '(("Circe"
 	    (or (mode . circe-channel-mode)
 		(mode . circe-query-mode)
 		(mode . circe-server-mode))))
-	 (ibuffer-projectile-generate-filter-groups)))
+;;	 (ibuffer-projectile-generate-filter-groups)
+         ))
   (unless (eq ibuffer-sorting-mode 'alphabetic)
     (ibuffer-do-sort-by-alphabetic)))
 
@@ -1039,6 +1041,24 @@ from `after-change-functions' fixes that."
 (load "dired" nil t)
 (define-key dired-mode-map (kbd "a") 'dired-find-alternate-file)
 (define-key dired-mode-map (kbd "RET") 'dired-find-file)
+(add-hook 'dired-mode-hook (lambda ()  (dired-hide-details-mode 1)))
+
+;; window-purpose
+;;(require 'window-purpose)
+(purpose-mode)
+;;(add-to-list 'purpose-user-mode-purposes '(python-mode . py))
+;;(add-to-list 'purpose-user-mode-purposes '(dired-mode . projectstructure))
+;;(add-to-list 'purpose-user-mode-purposes '(inferior-python-mode . misc))
+
+;;(add-to-list 'purpose-user-name-purposes '(<name> . <purpose>))
+;;(add-to-list 'purpose-user-regexp-purposes '(<pattern> . <purpose>))
+;;(setq purpose-use-default-configuration t)
+                                        ; not really necessary,
+                                        ; default is t
+;;(add-hook 'purpose-select-buffer-hook (lambda () (python-shell-switch-to-shell) ))
+;;(purpose-compile-user-configuration) ; activates your changes
+(global-set-key (kbd "M-L") 'purpose-x-code1-setup)
+
 
 
 
@@ -1068,3 +1088,23 @@ from `after-change-functions' fixes that."
 (put 'scroll-left 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
+
+;; revive and windowsmode
+;;(autoload 'save-current-configuration "revive" "Save status" t)
+;; (autoload 'resume "revive" "Resume Emacs" t)
+;; (autoload 'wipe "revive" "Wipe Emacs" t)
+;; (define-key ctl-x-map "S" 'save-current-configuration)
+;; (define-key ctl-x-map "F" 'resume)
+;; (define-key ctl-x-map "K" 'wipe)
+
+;;(require 'session)
+
+;;(add-hook 'after-init-hook 'session-initialize)
+
+
+;;(setq desktop-restore-frames nil)
+
+
+
+
+
