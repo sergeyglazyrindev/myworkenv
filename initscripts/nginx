@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/sbin/runscript
 #
 # nginx - this script starts and stops the nginx daemon
 # for compiled nginx by passenger-install-nginx-module
@@ -43,6 +43,5 @@ case "$1" in
         force_reload
         ;;
     *)
-        echo $"Usage: $0 {start|stop|restart|force-reload}"
-        exit 2
+        start
 esac
