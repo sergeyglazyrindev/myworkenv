@@ -35,7 +35,7 @@ if [[ ! -h ~/.emacs.d/init.el ]]; then
    ln -s ~/Projects/Personal/myworkenv/init.el ~/.emacs.d/
 fi
 
-run_scripts_queue=(konsole powerline-shell gitsetup)
+run_scripts_queue=(konsole powerline-shell gitsetup rbenv)
 for script in ${run_scripts_queue[@]}; do
     . includes/$script.sh
 done
