@@ -1042,6 +1042,9 @@ from `after-change-functions' fixes that."
 (define-key dired-mode-map (kbd "a") 'dired-find-alternate-file)
 (define-key dired-mode-map (kbd "RET") 'dired-find-file)
 (add-hook 'dired-mode-hook (lambda ()  (dired-hide-details-mode 1)))
+(setq dired-omit-mode t)
+(setq-default dired-omit-files-p t) ; this is buffer-local variable
+(setq dired-omit-files "^\\.$\\|\\.pdf$\\|\\.pyc$\\|\\.tex$\\|\\.egg-info$\\|^__pycache__$")
 
 ;; window-purpose
 ;;(require 'window-purpose)
