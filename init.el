@@ -7,6 +7,8 @@
 ;; https://raw.githubusercontent.com/jorgenschaefer/emacs-ixio/master/ixio.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/legalese/master/legalese.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/pyvenv/master/pyvenv.el
+;; python packages for elpy: jedi flake8 importmagic autopep8, clone
+;; this repository https://github.com/sellout/emacs-color-theme-solarized.git
 
 ;; Bugfix until #20356 is fixed.
 (set-terminal-parameter nil 'xterm--set-selection nil)
@@ -754,6 +756,8 @@ glyph."
 	      (val (match-string 2 elt)))
 	  (set (intern var) (read val)))))))
 
+  (elpy-use-ipython)
+
 ;;;;;;;
 ;; ixio
 (load "ixio" t t)
@@ -1107,7 +1111,7 @@ from `after-change-functions' fixes that."
 
 ;;(setq desktop-restore-frames nil)
 
-
-
-
-
+;; face customization
+(add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized/")
+(setq frame-background-mode 'dark)
+(load-theme 'solarized t)
