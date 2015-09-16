@@ -756,7 +756,7 @@ glyph."
 	      (val (match-string 2 elt)))
 	  (set (intern var) (read val)))))))
 
-  (elpy-use-ipython)
+;;  (elpy-use-ipython)
 
 ;;;;;;;
 ;; ixio
@@ -1065,6 +1065,7 @@ from `after-change-functions' fixes that."
 ;;(add-hook 'purpose-select-buffer-hook (lambda () (python-shell-switch-to-shell) ))
 ;;(purpose-compile-user-configuration) ; activates your changes
 (global-set-key (kbd "M-L") 'purpose-x-code1-setup)
+(global-set-key (kbd "<f4>") 'delete-window)
 
 
 
