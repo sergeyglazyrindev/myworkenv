@@ -2,7 +2,7 @@
 
 # uninstall old stuff 
 cp ~/.bashrc_mine ~/.bashrc_mine.bkp
-cp /dev/null ~/.bashrc_mine
+cp ./bashrc_mine ~/.bashrc_mine
 mkdir -p ~/Projects/ReposBkp/
 echo "Backup repos to make sure nothing has lost"
 cp -r ~/Projects/Repos/* ~/Projects/ReposBkp/ 2>/dev/null
@@ -35,7 +35,7 @@ if [[ ! -h ~/.emacs.d/init.el ]]; then
    ln -s ~/Projects/Personal/myworkenv/init.el ~/.emacs.d/
 fi
 
-run_scripts_queue=(konsole powerline-shell gitsetup rbenv)
+run_scripts_queue=(konsole powerline-shell gitsetup rbenv flymake)
 for script in ${run_scripts_queue[@]}; do
     . includes/$script.sh
 done
