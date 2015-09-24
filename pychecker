@@ -1,5 +1,0 @@
-#!/bin/bash
-
-pyflakes "$1"
-pep8 --max-line-length=119 --repeat "$1"
-true

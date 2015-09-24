@@ -1,1 +1,1 @@
-cp ./pychecker ~/bin
+cp ./flake8 ~/.config
