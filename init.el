@@ -1,13 +1,16 @@
 ;; please don't forget to install following packages
 ;; auto-complete popup smartscan use-package elpy js2-mode magit
 ;; markdown-mode multiple-cursors paredit projectile typo yaml-mode window-purpose
-;; site-lisp
+;; site-lisp gist
 ;; https://raw.githubusercontent.com/purcell/elisp-slime-nav/master/elisp-slime-nav.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/comint-scroll-to-bottom/master/comint-scroll-to-bottom.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/emacs-ixio/master/ixio.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/legalese/master/legalese.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/pyvenv/master/pyvenv.el
 ;; python packages for elpy: jedi flake8 importmagic autopep8, clone
+;; git clone git://github.com/defunkt/gist.el.git
+;; https://raw.githubusercontent.com/sigma/logito/master/logito.el
+;; https://raw.githubusercontent.com/sigma/pcache/master/pcache.el
 ;; this repository https://github.com/sellout/emacs-color-theme-solarized.git
 
 ;; Bugfix until #20356 is fixed.
@@ -598,6 +601,12 @@ result and keeps only the warnings."
 ;;;;;;;;;;;;;
 ;;; html-mode
 (load "sgml-mode" nil t)
+(add-hook 'html-mode-hook
+          (lambda ()
+            ;; Default indentation is usually 2 spaces,
+            ;; changing to 4.
+            (set (make-local-variable 'sgml-basic-offset) 4)))
+
 (define-key html-mode-map (kbd "C-c RET") 'fc/html-toggle-paragraph)
 (defun fc/html-toggle-paragraph ()
   "Add or remove HTML paragraph tags from the current paragraph"
@@ -641,7 +650,7 @@ glyph."
 ;; For json only, really. js2-mode doesn't do a good job with json.
 
 (load "js")
-(setq-default js-indent-level 2)
+(setq-default js-indent-level 4)
 
 ;;;;;;;;;;;;;;;
 ;;; python-mode
@@ -770,7 +779,7 @@ glyph."
 		js2-mode-indent-ignore-first-tab t
 		js2-mode-indent-inhibit-undo t
 		js2-global-externs '("$")
-		js2-basic-offset 2
+		js2-basic-offset 4
 		js2-global-externs
 		'(;; AngularJS
 		  "angular" "module" "inject"
@@ -1116,3 +1125,9 @@ from `after-change-functions' fixes that."
 (add-to-list 'custom-theme-load-path "~/.emacs.d/emacs-color-theme-solarized/")
 (setq frame-background-mode 'dark)
 (load-theme 'solarized t)
+
+;; gist
+(require 'pcache)
+(require 'logito)
+(require 'gh)
+(require 'gist)
