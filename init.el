@@ -8,9 +8,8 @@
 ;; https://raw.githubusercontent.com/jorgenschaefer/legalese/master/legalese.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/pyvenv/master/pyvenv.el
 ;; python packages for elpy: jedi flake8 importmagic autopep8, clone
-;; git clone git://github.com/defunkt/gist.el.git
 ;; https://raw.githubusercontent.com/sigma/logito/master/logito.el
-;; https://raw.githubusercontent.com/sigma/pcache/master/pcache.el
+;; install pcache, gist
 ;; this repository https://github.com/sellout/emacs-color-theme-solarized.git
 
 ;; Bugfix until #20356 is fixed.
@@ -1075,6 +1074,11 @@ from `after-change-functions' fixes that."
 ;;(purpose-compile-user-configuration) ; activates your changes
 (global-set-key (kbd "M-L") 'purpose-x-code1-setup)
 (global-set-key (kbd "<f4>") 'delete-window)
+(defvar purpose-x-magit-single-conf
+    (purpose-conf "magit-single"
+      :regexp-purposes '(("^\\*magit" . ilist)))
+      "Configuration that gives each magit major mode the same purpose.")
+(purpose-x-magit-single-on)
 
 
 
