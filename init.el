@@ -10,7 +10,8 @@
 ;; python packages for elpy: jedi flake8 importmagic autopep8, clone
 ;; https://raw.githubusercontent.com/sigma/logito/master/logito.el
 ;; install pcache, gist
-;; this repository https://github.com/sellout/emacs-color-theme-solarized.git
+;; this repository
+;; https://github.com/sellout/emacs-color-theme-solarized.git
 
 ;; Bugfix until #20356 is fixed.
 (set-terminal-parameter nil 'xterm--set-selection nil)
@@ -1076,7 +1077,7 @@ from `after-change-functions' fixes that."
 (global-set-key (kbd "<f4>") 'delete-window)
 (defvar purpose-x-magit-single-conf
     (purpose-conf "magit-single"
-      :regexp-purposes '(("^\\*magit" . ilist)))
+      :regexp-purposes '(("^\\*magit" . edit)))
       "Configuration that gives each magit major mode the same purpose.")
 (purpose-x-magit-single-on)
 
@@ -1104,6 +1105,9 @@ from `after-change-functions' fixes that."
 (face-spec-set 'rst-level-2 '((t (:foreground "cyan" :background nil))))
 (face-spec-set 'rst-level-3 '((t (:foreground "cyan" :background nil))))
 (face-spec-set 'rst-level-4 '((t (:foreground "cyan" :background nil))))
+(set-face-attribute 'magit-diff-added-highlight nil :foreground "black" :background "color-28")
+(set-face-attribute 'magit-diff-their-highlight nil :foreground "black" :background "color-28")
+(face-spec-set 'magit-diff-removed-highlight '((t (:foreground "black" :background "color-209"))))
 
 (put 'narrow-to-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
