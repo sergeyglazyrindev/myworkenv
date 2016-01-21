@@ -1139,3 +1139,5 @@ from `after-change-functions' fixes that."
 (require 'logito)
 (require 'gh)
 (require 'gist)
+
+(setq toggle-debug-on-quit t)
