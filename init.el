@@ -899,6 +899,7 @@ from `after-change-functions' fixes that."
 
 ;; This actually comes with Emacs, but we want to use the one from GNU
 ;; ELPA as it is more current, hence it's down here.
+
 (when (load "org" t t)
   (modify-syntax-entry ?\' "." org-mode-syntax-table)
   (define-key org-mode-map (kbd "C-c a") 'fc/org-agenda)
@@ -927,7 +928,9 @@ from `after-change-functions' fixes that."
   (dolist (filename '("~/Documents/Notes/Todo"
 		      "~/Files/google-calendar.org"))
     (when (file-exists-p filename)
-      (add-to-list 'org-agenda-files filename t))))
+      (add-to-list 'org-agenda-files filename t)))
+  )
+
 
 ;;;;;;;;;;
 ;; paredit
@@ -1059,6 +1062,7 @@ from `after-change-functions' fixes that."
 (setq-default dired-omit-files-p t) ; this is buffer-local variable
 (setq dired-omit-files "^\\.$\\|\\.pdf$\\|\\.pyc$\\|\\.tex$\\|\\.egg-info$\\|^__pycache__$")
 
+
 ;; window-purpose
 ;;(require 'window-purpose)
 (purpose-mode)
@@ -1073,7 +1077,12 @@ from `after-change-functions' fixes that."
                                         ; default is t
 ;;(add-hook 'purpose-select-buffer-hook (lambda () (python-shell-switch-to-shell) ))
 ;;(purpose-compile-user-configuration) ; activates your changes
-(global-set-key (kbd "M-L") 'purpose-x-code1-setup)
+(defun load-purpose-mode ()
+  (interactive)
+  (purpose-x-code1-setup)
+  (todo-mode-get-buffer-create)
+  )
+(global-set-key (kbd "M-L") 'load-purpose-mode)
 (global-set-key (kbd "<f4>") 'delete-window)
 (defvar purpose-x-magit-single-conf
     (purpose-conf "magit-single"
@@ -1141,3 +1150,27 @@ from `after-change-functions' fixes that."
 (require 'gist)
 
 (setq toggle-debug-on-quit t)
+
+;; todo mode!!!
+
+(defconst todo-mode-buffer-name "*CodeTodo*"
+  "Name of the buffer that is used to display todo entries.")
+
+(defun on-org-mode-todo-file-built (process event)
+  (find-file (concat (getenv "PROJECTS_ROOT") "todo.org"))
+  (call-interactively 'read-only-mode)
+  )
+(defun build-org-mode-file-for-todo ()
+  (start-process "Building todo things" "*CodeTodo*" "bash" "-ic" "workon rit; source ~/.bashrc; collecttodotags")
+  (set-process-sentinel (get-process "Building todo things") 'on-org-mode-todo-file-built)
+  )
+(defun todo-mode-get-buffer-create ()
+    "Return the todo-mode buffer.
+If it doesn't exist, create it."
+    (or (get-buffer todo-mode-buffer-name)
+        (let ((buffer (get-buffer-create todo-mode-buffer-name)))
+          (with-current-buffer buffer
+            (org-mode)
+            (build-org-mode-file-for-todo)
+            (pop-to-buffer todo-mode-buffer-name)
+                      buffer))))
