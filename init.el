@@ -1172,5 +1172,10 @@ If it doesn't exist, create it."
           (with-current-buffer buffer
             (org-mode)
             (build-org-mode-file-for-todo)
-            (pop-to-buffer todo-mode-buffer-name)
-                      buffer))))
+            (pop-to-buffer todo-mode-buffer-name))
+          buffer)))
+
+;; resizing windows
+
+(global-set-key "\C-c+" (lambda () (interactive) (enlarge-window +20)))
+(global-set-key "\C-c_" (lambda () (interactive) (enlarge-window -20)))
