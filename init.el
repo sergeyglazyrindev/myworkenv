@@ -757,15 +757,16 @@ glyph."
 
   (global-set-key (kbd "C-c ,") 'elpy-multiedit)
   (add-hook 'pyvenv-post-activate-hooks 'fc/configure-elpy-from-env)
+  (elpy-use-ipython)
   (defun fc/configure-elpy-from-env ()
     (dolist (elt process-environment)
       (when (string-match "\\`\\(ELPY_[^=]*\\)=\\(.*\\)\\'" elt)
 	(let ((var (downcase
 		    (replace-regexp-in-string "_" "-" (match-string 1 elt))))
 	      (val (match-string 2 elt)))
-	  (set (intern var) (read val)))))))
+	  (set (intern var) (read val))))))
+  )
 
-;;  (elpy-use-ipython)
 
  ;;;;;;;
 ;; ixio

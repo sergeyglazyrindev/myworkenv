@@ -18,6 +18,7 @@ function prompt()
     if [ "$PWD" != "$MYOLDPWD" ]; then
 	MYOLDPWD="$PWD"
 	test -e .venv && workon `cat .venv`
+	test -e .dir.sh && source .dir.sh
     fi
 }
 
