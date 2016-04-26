@@ -15,7 +15,7 @@ def run():
 
     todo = []
     for line in lines:
-        matches = re.search(r'^(.*)?:(\d+):\s+(.*)$', line)
+        matches = re.search(r'^(.*)?:(\d+):\s*(.*)$', line)
         current_file = re.sub(r'^\.\/', '', matches.group(1))
         line_in_file = matches.group(2)
         description = matches.group(3)
