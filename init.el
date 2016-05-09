@@ -12,6 +12,8 @@
 ;; install pcache, gist
 ;; this repository
 ;; https://github.com/sellout/emacs-color-theme-solarized.git
+;; https://raw.githubusercontent.com/naiquevin/sphinx-doc.el/master/sphinx-doc.el
+;; wget -O s.el https://melpa.org/packages/s-20160429.727.el
 
 ;; Bugfix until #20356 is fixed.
 (set-terminal-parameter nil 'xterm--set-selection nil)
@@ -539,8 +541,8 @@ symbol, not word, as I need this for programming the most."
 ;;;;;;;;;;;;;;
 ;; windmove.el
 
-(global-set-key (kbd "C-x <up>") 'windmove-up)
-(global-set-key (kbd "C-x <down>") 'windmove-down)
+(global-set-key (kbd "C-x <C-up>") 'windmove-up)
+(global-set-key (kbd "C-x <C-down>") 'windmove-down)
 (global-set-key (kbd "C-x <left>") 'windmove-left)
 (global-set-key (kbd "C-x <right>") 'windmove-right)
 
@@ -1180,3 +1182,8 @@ If it doesn't exist, create it."
 
 (global-set-key "\C-c+" (lambda () (interactive) (enlarge-window +20)))
 (global-set-key "\C-c_" (lambda () (interactive) (enlarge-window -20)))
+
+
+(add-hook 'python-mode-hook (lambda()
+    (require 'sphinx-doc)
+    (sphinx-doc-mode t)))
