@@ -8,17 +8,20 @@ import os
 def run():
     lines = sys.stdin.readlines()
     try:
-        with open(os.getenv('PROJECTS_ROOT') + 'todo.org', 'r') as fp:
+        with open('todo.org', 'r') as fp:
             current_todo = fp.read()
     except IOError:
         current_todo = ''
 
     todo = []
+    lines = list(filter(None, [line.strip() for line in lines]))
     for line in lines:
-        matches = re.search(r'^(.*)?:(\d+):\s*(.*)$', line)
-        current_file = re.sub(r'^\.\/', '', matches.group(1))
-        line_in_file = matches.group(2)
-        description = matches.group(3)
+        matches = re.search(r'^(\d+):\s*(.*)$', line)
+        if not matches:
+            current_file = line
+            continue
+        line_in_file = matches.group(1)
+        description = matches.group(2)
         importance = re.search(r'\@tod(o+)', description)
         importance = len(importance.group(1))
         description = re.sub(r'.*\@todo+\s*', '', description)

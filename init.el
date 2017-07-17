@@ -1,6 +1,6 @@
 ;; please don't forget to install following packages
 ;; auto-complete popup smartscan use-package elpy js2-mode magit
-;; markdown-mode multiple-cursors paredit projectile typo yaml-mode window-purpose
+;; markdown-mode multiple-cursors paredit projectile typo yaml-mode window-purpose pymacs
 ;; site-lisp gist
 ;; https://raw.githubusercontent.com/purcell/elisp-slime-nav/master/elisp-slime-nav.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/comint-scroll-to-bottom/master/comint-scroll-to-bottom.el
@@ -682,6 +682,7 @@ glyph."
 ;; > may show up in some prompts
 (setq shell-prompt-pattern "^[^#$%\n]*[#$%>] *")
 (global-set-key (kbd "C-c s") 'fc/toggle-shell)
+(global-set-key (kbd "C-c c p") 'python-shell-switch-to-shell)
 (defun fc/toggle-shell ()
   "Switch between the last active buffer and the shell."
   (interactive)
@@ -759,7 +760,7 @@ glyph."
 
   (global-set-key (kbd "C-c ,") 'elpy-multiedit)
   (add-hook 'pyvenv-post-activate-hooks 'fc/configure-elpy-from-env)
-  (elpy-use-ipython)
+  ;; (elpy-use-ipython)
   (defun fc/configure-elpy-from-env ()
     (dolist (elt process-environment)
       (when (string-match "\\`\\(ELPY_[^=]*\\)=\\(.*\\)\\'" elt)
@@ -1160,7 +1161,7 @@ from `after-change-functions' fixes that."
   "Name of the buffer that is used to display todo entries.")
 
 (defun on-org-mode-todo-file-built (process event)
-  (find-file (concat (getenv "PROJECTS_ROOT") "todo.org"))
+  (find-file (concat (getenv "PWD") "/todo.org"))
   (call-interactively 'read-only-mode)
   )
 (defun build-org-mode-file-for-todo ()
@@ -1184,6 +1185,119 @@ If it doesn't exist, create it."
 (global-set-key "\C-c_" (lambda () (interactive) (enlarge-window -20)))
 
 
+(defun switch-to-previous-buffer ()
+    "Switch to previously open buffer.
+  Repeated invocations toggle between the two most recently open buffers."
+    (interactive)
+      (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+
+(global-set-key (kbd "C-c b") 'switch-to-previous-buffer)
+
+(defun get-only-one-buffer-with-purpose (purpose)
+  "Get buffers wih purpose"
+  (buffer-name (nth 0 (purpose-buffers-with-purpose purpose)))
+  )
+(define-key purpose-mode-map (kbd "C-c C-f")
+  (lambda () (interactive) (purpose-switch-buffer-with-some-purpose 'dired))
+  )
+
+(define-key purpose-mode-map (kbd "C-c C-l")
+  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'buffers)))
+  )
+
+(define-key purpose-mode-map (kbd "C-c C-c")
+  (lambda () (interactive) (purpose-switch-buffer-with-some-purpose 'edit))
+  )
+
+(define-key purpose-mode-map (kbd "C-c C-d")
+  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'ilist)))
+  )
+
+
+(define-key purpose-mode-map (kbd "C-c C-t")
+  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'todo)))
+  )
+
+(define-key purpose-mode-map (kbd "C-c C-g") 'goto-line)
+
 (add-hook 'python-mode-hook (lambda()
     (require 'sphinx-doc)
     (sphinx-doc-mode t)))
+
+
+(defun xah-run-current-file ()
+  "Execute the current file.
+For example, if the current buffer is the file x.py, then it'll call 「python x.py」 in a shell.
+The file can be Emacs Lisp, PHP, Perl, Python, Ruby, JavaScript, Bash, Ocaml, Visual Basic, TeX, Java, Clojure.
+File suffix is used to determine what program to run.
+
+If the file is modified or not saved, save it automatically before run.
+
+URL `http://ergoemacs.org/emacs/elisp_run_current_file.html'
+version 2016-01-28"
+  (interactive)
+  (let (
+         (-suffix-map
+          ;; (‹extension› . ‹shell program name›)
+          `(
+            ("php" . "php")
+            ("pl" . "perl")
+            ("py" . "python")
+            ("py3" . ,(if (string-equal system-type "windows-nt") "c:/Python32/python.exe" "python3"))
+            ("rb" . "ruby")
+            ("go" . "go run")
+            ("js" . "node") ; node.js
+            ("sh" . "bash")
+            ("clj" . "java -cp /home/xah/apps/clojure-1.6.0/clojure-1.6.0.jar clojure.main")
+            ("rkt" . "racket")
+            ("ml" . "ocaml")
+            ("vbs" . "cscript")
+            ("tex" . "pdflatex")
+            ("latex" . "pdflatex")
+            ("java" . "javac")
+            ;; ("pov" . "/usr/local/bin/povray +R2 +A0.1 +J1.2 +Am2 +Q9 +H480 +W640")
+            ))
+
+         -fname
+         -fSuffix
+         -prog-name
+         -cmd-str)
+
+    (when (null (buffer-file-name)) (save-buffer))
+    (when (buffer-modified-p) (save-buffer))
+
+    (setq -fname (buffer-file-name))
+    (setq -fSuffix (file-name-extension -fname))
+    (setq -prog-name (cdr (assoc -fSuffix -suffix-map)))
+    (setq -cmd-str (concat -prog-name " \""   -fname "\""))
+
+    (message -fSuffix)
+    (cond
+     ((string-equal -fSuffix "el") (load -fname))
+     ((string-equal -fSuffix "c")
+      (progn
+        (message "Running…")
+        (shell-command "make -k build" )
+        (shell-command "make -k run" )
+        (message "Executed...")
+        ))
+     ((string-equal -fSuffix "java")
+      (progn
+        (shell-command -cmd-str "*xah-run-current-file output*" )
+        (shell-command
+         (format "java %s" (file-name-sans-extension (file-name-nondirectory -fname))))))
+     (t (if -prog-name
+            (progn
+              (message "Running…")
+              (shell-command -cmd-str "*xah-run-current-file output*" ))
+          (if (not ((member -fSuffix '(c)))) (message "No recognized program file suffix for this file.") )))
+     )))
+
+(global-set-key (kbd "<f5>") 'xah-run-current-file)
+
+(require 'pymacs)
+(pymacs-load "ropemacs" "rope-")
+(setq ropemacs-enable-shortcuts nil) (setq ropemacs-local-prefix "C-c C-p")
+
+(global-set-key (kbd "C-i") buffer-file-name)

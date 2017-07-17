@@ -1,5 +1,6 @@
 export PATH="$PATH:$HOME/bin:$HOME/Projects/Personal/myworkenv" # Add our bin directory to PATH
 export TERM=xterm-256color
 export PROJECTS_ROOT="$HOME/Projects/Personal/"
-alias collecttodotags="grep -n -r --exclude-dir='.git' --exclude-dir='myworkenv' --exclude='TAGS' --exclude='todo.org' '@todo' $PROJECTS_ROOT | create_org_mode_todo_file.py > $PROJECTS_ROOT/todo.org"
+alias collecttodotags="find `pwd` -type d \( -name .git -o -name myworkenv -o -name node_modules \) -prune -o -type f \( -name todo.org \) -prune -o -type f -print -exec grep -n '@todo' '{}' \; | create_org_mode_todo_file.py > ./todo.org"
+
 
