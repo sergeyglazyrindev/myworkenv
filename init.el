@@ -489,6 +489,13 @@ symbol, not word, as I need this for programming the most."
 (load "saveplace" nil t)
 (setq-default save-place t)
 
+;;;;;;;;;;;;;;;
+;; sh mode hook
+(defun my-shell-mode-setup-imenu ()
+  (setq imenu-generic-expression (append '((nil "^\\([A-Z_]+\\)=.*" 1))
+                                         (nthcdr 1 (car sh-imenu-generic-expression)))))
+(add-hook 'sh-mode-hook 'my-shell-mode-setup-imenu)
+
 ;;;;;;;;;;;;
 ;; server.el
 
@@ -1070,6 +1077,34 @@ from `after-change-functions' fixes that."
 ;; window-purpose
 ;;(require 'window-purpose)
 (purpose-mode)
+(add-to-list 'purpose-user-mode-purposes
+             '(inferior-python-mode . misc))
+(add-to-list 'purpose-user-mode-purposes
+             '(python-inferior-mode . misc))
+(add-to-list 'purpose-user-mode-purposes
+             '(org-mode . todo))
+(add-to-list 'purpose-user-mode-purposes
+             '(grep-mode . misc))
+(add-to-list 'purpose-user-mode-purposes
+             '(gdb-inferior-io-mode . misc))
+(add-to-list 'purpose-user-mode-purposes
+             '(fundamental-mode . misc))
+(add-to-list 'purpose-user-mode-purposes 
+             '(compilation-mode . misc))
+(add-to-list 'purpose-user-mode-purposes 
+             '(css-mode . edit))
+(add-to-list 'purpose-user-mode-purposes
+             '(shell-mode . misc))
+(add-to-list 'purpose-user-mode-purposes
+             '(eshell-mode . misc))
+(add-to-list 'purpose-user-mode-purposes
+             '(term-mode . misc))
+(add-to-list 'purpose-user-mode-purposes
+             '(yaml-mode . edit))
+(add-to-list 'purpose-user-mode-purposes
+             '(conf-unix-mode . edit))
+
+
 ;;(add-to-list 'purpose-user-mode-purposes '(python-mode . py))
 ;;(add-to-list 'purpose-user-mode-purposes '(dired-mode . projectstructure))
 ;;(add-to-list 'purpose-user-mode-purposes '(inferior-python-mode . misc))
@@ -1083,6 +1118,7 @@ from `after-change-functions' fixes that."
 ;;(purpose-compile-user-configuration) ; activates your changes
 (defun load-purpose-mode ()
   (interactive)
+  (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
   (purpose-x-code1-setup)
   (todo-mode-get-buffer-create)
   )
@@ -1090,9 +1126,10 @@ from `after-change-functions' fixes that."
 (global-set-key (kbd "<f4>") 'delete-window)
 (defvar purpose-x-magit-single-conf
     (purpose-conf "magit-single"
-      :regexp-purposes '(("^\\*magit" . edit)))
+      :regexp-purposes '(("^\\*magit" . misc)))
       "Configuration that gives each magit major mode the same purpose.")
 (purpose-x-magit-single-on)
+(purpose-compile-user-configuration)
 
 
 
