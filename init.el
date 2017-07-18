@@ -1089,9 +1089,9 @@ from `after-change-functions' fixes that."
              '(gdb-inferior-io-mode . misc))
 (add-to-list 'purpose-user-mode-purposes
              '(fundamental-mode . misc))
-(add-to-list 'purpose-user-mode-purposes 
+(add-to-list 'purpose-user-mode-purposes
              '(compilation-mode . misc))
-(add-to-list 'purpose-user-mode-purposes 
+(add-to-list 'purpose-user-mode-purposes
              '(css-mode . edit))
 (add-to-list 'purpose-user-mode-purposes
              '(shell-mode . misc))
@@ -1118,10 +1118,11 @@ from `after-change-functions' fixes that."
 ;;(purpose-compile-user-configuration) ; activates your changes
 (defun load-purpose-mode ()
   (interactive)
-  (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
+  ;; (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
   (purpose-x-code1-setup)
   (todo-mode-get-buffer-create)
-  )
+  ;; (purpose-switch-buffer "*Ilist*")
+)
 (global-set-key (kbd "M-L") 'load-purpose-mode)
 (global-set-key (kbd "<f4>") 'delete-window)
 (defvar purpose-x-magit-single-conf

@@ -7,11 +7,7 @@ import os
 
 def run():
     lines = sys.stdin.readlines()
-    try:
-        with open('todo.org', 'r') as fp:
-            current_todo = fp.read()
-    except IOError:
-        current_todo = ''
+    current_todo = ''
 
     todo = []
     lines = list(filter(None, [line.strip() for line in lines]))
