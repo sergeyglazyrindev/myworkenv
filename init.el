@@ -1080,6 +1080,8 @@ from `after-change-functions' fixes that."
 (add-to-list 'purpose-user-mode-purposes
              '(inferior-python-mode . misc))
 (add-to-list 'purpose-user-mode-purposes
+             '(imenu-list-major-mode . ilist))
+(add-to-list 'purpose-user-mode-purposes
              '(python-inferior-mode . misc))
 (add-to-list 'purpose-user-mode-purposes
              '(org-mode . todo))
@@ -1103,6 +1105,7 @@ from `after-change-functions' fixes that."
              '(yaml-mode . edit))
 (add-to-list 'purpose-user-mode-purposes
              '(conf-unix-mode . edit))
+;; (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
 
 
 ;;(add-to-list 'purpose-user-mode-purposes '(python-mode . py))
@@ -1118,8 +1121,13 @@ from `after-change-functions' fixes that."
 ;;(purpose-compile-user-configuration) ; activates your changes
 (defun load-purpose-mode ()
   (interactive)
-  ;; (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
-  (purpose-x-code1-setup)
+  ;; (purpose-x-code1-setup)
+  (purpose-x-code1--setup-ibuffer)
+  (purpose-x-code1-update-dired)
+  (ignore-errors (imenu-list-minor-mode))
+  (frame-or-buffer-changed-p 'purpose-x-code1-buffers-changed)
+  (add-hook 'post-command-hook #'purpose-x-code1-update-changed)
+  (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
   (todo-mode-get-buffer-create)
   ;; (purpose-switch-buffer "*Ilist*")
 )
