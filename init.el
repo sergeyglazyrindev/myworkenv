@@ -1084,8 +1084,6 @@ from `after-change-functions' fixes that."
 (add-to-list 'purpose-user-mode-purposes
              '(inferior-python-mode . misc))
 (add-to-list 'purpose-user-mode-purposes
-             '(imenu-list-major-mode . ilist))
-(add-to-list 'purpose-user-mode-purposes
              '(python-inferior-mode . misc))
 (add-to-list 'purpose-user-mode-purposes
              '(org-mode . misc))
@@ -1110,33 +1108,16 @@ from `after-change-functions' fixes that."
 (add-to-list 'purpose-user-mode-purposes
              '(conf-unix-mode . edit))
 
-
-;; (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
-
-
-;;(add-to-list 'purpose-user-mode-purposes '(python-mode . py))
-;;(add-to-list 'purpose-user-mode-purposes '(dired-mode . projectstructure))
-;;(add-to-list 'purpose-user-mode-purposes '(inferior-python-mode . misc))
-
-;;(add-to-list 'purpose-user-name-purposes '(<name> . <purpose>))
-;;(add-to-list 'purpose-user-regexp-purposes '(<pattern> . <purpose>))
-;;(setq purpose-use-default-configuration t)
-                                        ; not really necessary,
-                                        ; default is t
-;;(add-hook 'purpose-select-buffer-hook (lambda () (python-shell-switch-to-shell) ))
-;;(purpose-compile-user-configuration) ; activates your changes
 (defun load-purpose-mode ()
   (interactive)
-  ;; (purpose-x-code1-setup)
   (purpose-x-code1--setup-ibuffer)
   (neotree-toggle)
   (ignore-errors (imenu-list-minor-mode))
   (frame-or-buffer-changed-p 'purpose-full-ide-buffers-changed)
   (add-hook 'post-command-hook #'purpose-full-ide-buffers-changed)
   (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
-  (todo-mode-get-buffer-create)
-  ;; (purpose-switch-buffer "*Ilist*")
-)
+  (todo-mode-get-buffer-create))
+
 (global-set-key (kbd "M-L") 'load-purpose-mode)
 (global-set-key (kbd "<f4>") 'delete-window)
 (defvar purpose-x-magit-single-conf
