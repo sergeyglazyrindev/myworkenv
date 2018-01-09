@@ -1,6 +1,7 @@
 ;; please don't forget to install following packages
 ;; auto-complete popup smartscan use-package elpy js2-mode magit
-;; markdown-mode multiple-cursors paredit projectile typo yaml-mode window-purpose pymacs
+;; markdown-mode multiple-cursors paredit projectile typo yaml-mode window-purpose pymacs neotree
+;; pymacs
 ;; site-lisp gist
 ;; https://raw.githubusercontent.com/purcell/elisp-slime-nav/master/elisp-slime-nav.el
 ;; https://raw.githubusercontent.com/jorgenschaefer/comint-scroll-to-bottom/master/comint-scroll-to-bottom.el
@@ -220,7 +221,7 @@ signalled."
 	(replace-match "" nil t))
       (buffer-string)))
 
-(global-set-key (kbd "C-c d") 'fc/insert-date)
+(global-set-key (kbd "C-c t d") 'fc/insert-date)
 (defun fc/insert-date (prefix)
     "Insert the current date. With prefix-argument, use ISO format. With
 two prefix arguments, write out the day and month name."
@@ -959,7 +960,8 @@ from `after-change-functions' fixes that."
 ;;;;;;;;;;;;;
 ;; projectile
 (when (load "projectile" t t)
-  (projectile-global-mode))
+  (projectile-global-mode)
+  (projectile-mode))
 
 ;;;;;;;;;
 ;; pyvenv
@@ -993,6 +995,7 @@ from `after-change-functions' fixes that."
 (setq ac-auto-start 3)
 
 ;; adjusting copy buffers, want to work with os buffer instead of emacs buffer
+
 (xterm-mouse-mode 0)
 (defun copy-to-clipboard ()
   (interactive)
@@ -1006,8 +1009,7 @@ from `after-change-functions' fixes that."
 	  (shell-command-on-region (region-beginning) (region-end) "xsel -i -b")
 	  (message "Yanked region to clipboard!")
 	  (deactivate-mark))
-      (message "No region active; can't yank to clipboard!")))
-  )
+      (message "No region active; can't yank to clipboard!"))))
 
 (defun paste-from-clipboard ()
   (interactive)
@@ -1067,7 +1069,7 @@ from `after-change-functions' fixes that."
 
 (load "dired" nil t)
 (define-key dired-mode-map (kbd "a") 'dired-find-alternate-file)
-(define-key dired-mode-map (kbd "RET") 'dired-find-file)
+;;(define-key dired-mode-map (kbd "RET") 'dired-find-file)
 (add-hook 'dired-mode-hook (lambda ()  (dired-hide-details-mode 1)))
 (setq dired-omit-mode t)
 (setq-default dired-omit-files-p t) ; this is buffer-local variable
@@ -1078,13 +1080,15 @@ from `after-change-functions' fixes that."
 ;;(require 'window-purpose)
 (purpose-mode)
 (add-to-list 'purpose-user-mode-purposes
+             '(neotree-mode . dired))
+(add-to-list 'purpose-user-mode-purposes
              '(inferior-python-mode . misc))
 (add-to-list 'purpose-user-mode-purposes
              '(imenu-list-major-mode . ilist))
 (add-to-list 'purpose-user-mode-purposes
              '(python-inferior-mode . misc))
 (add-to-list 'purpose-user-mode-purposes
-             '(org-mode . todo))
+             '(org-mode . misc))
 (add-to-list 'purpose-user-mode-purposes
              '(grep-mode . misc))
 (add-to-list 'purpose-user-mode-purposes
@@ -1105,6 +1109,8 @@ from `after-change-functions' fixes that."
              '(yaml-mode . edit))
 (add-to-list 'purpose-user-mode-purposes
              '(conf-unix-mode . edit))
+
+
 ;; (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
 
 
@@ -1123,10 +1129,10 @@ from `after-change-functions' fixes that."
   (interactive)
   ;; (purpose-x-code1-setup)
   (purpose-x-code1--setup-ibuffer)
-  (purpose-x-code1-update-dired)
+  (neotree-toggle)
   (ignore-errors (imenu-list-minor-mode))
-  (frame-or-buffer-changed-p 'purpose-x-code1-buffers-changed)
-  (add-hook 'post-command-hook #'purpose-x-code1-update-changed)
+  (frame-or-buffer-changed-p 'purpose-full-ide-buffers-changed)
+  (add-hook 'post-command-hook #'purpose-full-ide-buffers-changed)
   (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
   (todo-mode-get-buffer-create)
   ;; (purpose-switch-buffer "*Ilist*")
@@ -1135,7 +1141,7 @@ from `after-change-functions' fixes that."
 (global-set-key (kbd "<f4>") 'delete-window)
 (defvar purpose-x-magit-single-conf
     (purpose-conf "magit-single"
-      :regexp-purposes '(("^\\*magit" . misc)))
+      :regexp-purposes '(("^\\*magit" . edit)))
       "Configuration that gives each magit major mode the same purpose.")
 (purpose-x-magit-single-on)
 (purpose-compile-user-configuration)
@@ -1208,12 +1214,12 @@ from `after-change-functions' fixes that."
 
 (defun on-org-mode-todo-file-built (process event)
   (find-file (concat (getenv "PWD") "/todo.org"))
-  (call-interactively 'read-only-mode)
-  )
+  (call-interactively 'read-only-mode))
+
 (defun build-org-mode-file-for-todo ()
-  (start-process "Building todo things" "*CodeTodo*" "bash" "-ic" "workon rit; source ~/.bashrc; collecttodotags")
-  (set-process-sentinel (get-process "Building todo things") 'on-org-mode-todo-file-built)
-  )
+  (start-process "Building todo things" "*CodeTodo*" "bash" "-ic" "source ~/.bashrc; collecttodotags")
+  (set-process-sentinel (get-process "Building todo things") 'on-org-mode-todo-file-built))
+
 (defun todo-mode-get-buffer-create ()
     "Return the todo-mode buffer.
 If it doesn't exist, create it."
@@ -1229,7 +1235,8 @@ If it doesn't exist, create it."
 
 (global-set-key "\C-c+" (lambda () (interactive) (enlarge-window +20)))
 (global-set-key "\C-c_" (lambda () (interactive) (enlarge-window -20)))
-
+(global-set-key "\C-c)" (lambda () (interactive) (enlarge-window-horizontally +20)))
+(global-set-key "\C-c(" (lambda () (interactive) (enlarge-window-horizontally -20)))
 
 (defun switch-to-previous-buffer ()
     "Switch to previously open buffer.
@@ -1237,33 +1244,26 @@ If it doesn't exist, create it."
     (interactive)
       (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-
 (global-set-key (kbd "C-c b") 'switch-to-previous-buffer)
 
 (defun get-only-one-buffer-with-purpose (purpose)
   "Get buffers wih purpose"
-  (buffer-name (nth 0 (purpose-buffers-with-purpose purpose)))
-  )
+  (buffer-name (nth 0 (purpose-buffers-with-purpose purpose))))
+
 (define-key purpose-mode-map (kbd "C-c C-f")
-  (lambda () (interactive) (purpose-switch-buffer-with-some-purpose 'dired))
-  )
+  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'dired))))
 
 (define-key purpose-mode-map (kbd "C-c C-l")
-  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'buffers)))
-  )
+  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'buffers))))
 
 (define-key purpose-mode-map (kbd "C-c C-c")
-  (lambda () (interactive) (purpose-switch-buffer-with-some-purpose 'edit))
-  )
+  (lambda () (interactive) (purpose-switch-buffer-with-some-purpose 'edit)))
 
 (define-key purpose-mode-map (kbd "C-c C-d")
-  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'ilist)))
-  )
-
+  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'ilist))))
 
 (define-key purpose-mode-map (kbd "C-c C-t")
-  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'todo)))
-  )
+  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'todo))))
 
 (define-key purpose-mode-map (kbd "C-c C-g") 'goto-line)
 
@@ -1337,13 +1337,13 @@ version 2016-01-28"
             (progn
               (message "Running…")
               (shell-command -cmd-str "*xah-run-current-file output*" ))
-          (if (not ((member -fSuffix '(c)))) (message "No recognized program file suffix for this file.") )))
-     )))
-
-(global-set-key (kbd "<f5>") 'xah-run-current-file)
+          (if (not ((member -fSuffix '(c)))) (message "No recognized program file suffix for this file.") ))))))
 
 (require 'pymacs)
 (pymacs-load "ropemacs" "rope-")
 (setq ropemacs-enable-shortcuts nil) (setq ropemacs-local-prefix "C-c C-p")
 
 (global-set-key (kbd "C-i") buffer-file-name)
+
+(require 'neotree)
+(set 'neo-window-fixed-size nil)
