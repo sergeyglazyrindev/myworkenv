@@ -1077,46 +1077,13 @@ from `after-change-functions' fixes that."
 
 
 ;; window-purpose
-;;(require 'window-purpose)
-(purpose-mode)
-(add-to-list 'purpose-user-mode-purposes
-             '(neotree-mode . dired))
-(add-to-list 'purpose-user-mode-purposes
-             '(inferior-python-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(python-inferior-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(org-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(grep-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(gdb-inferior-io-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(fundamental-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(compilation-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(css-mode . edit))
-(add-to-list 'purpose-user-mode-purposes
-             '(shell-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(eshell-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(term-mode . misc))
-(add-to-list 'purpose-user-mode-purposes
-             '(yaml-mode . edit))
-(add-to-list 'purpose-user-mode-purposes
-             '(conf-unix-mode . edit))
+(require 'window-purpose)
+
 
 (defun load-purpose-mode ()
   (interactive)
-  (purpose-x-code1--setup-ibuffer)
-  (neotree-toggle)
-  (ignore-errors (imenu-list-minor-mode))
-  (frame-or-buffer-changed-p 'purpose-full-ide-buffers-changed)
-  (add-hook 'post-command-hook #'purpose-full-ide-buffers-changed)
-  (purpose-load-window-layout-file "~/.emacs.d/layouts/full-ide.window-layout")
-  (todo-mode-get-buffer-create))
+  (purpose-mode)
+  (purpose-full-ide-setup))
 
 (global-set-key (kbd "M-L") 'load-purpose-mode)
 (global-set-key (kbd "<f4>") 'delete-window)
@@ -1125,7 +1092,37 @@ from `after-change-functions' fixes that."
       :regexp-purposes '(("^\\*magit" . edit)))
       "Configuration that gives each magit major mode the same purpose.")
 (purpose-x-magit-single-on)
-(purpose-compile-user-configuration)
+
+(defun get-only-one-buffer-with-purpose (purpose)
+  "Get buffers wih purpose"
+  (buffer-name (nth 0 (purpose-buffers-with-purpose purpose))))
+
+;; (mapc (lambda (map)
+;;	(define-key purpose-mode-map (kbd (concat "C-c C-" (cadr map)))
+;;          (funcall (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'dired))) "dired")))
+;;            '(("f" "dired")
+;;	      ("l" "buffers")
+;;	      ("d" "ilist")
+;;	      ("t" "todo")))
+
+;; (setq diredkey "f")
+;; (setq diredmode "dired")
+;; (define-key purpose-mode-map (kbd (concat "C-c C-" diredkey))
+;;  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose diredmode))))
+ 
+;; (define-key purpose-mode-map (kbd "C-c C-l")
+;;   (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'buffers))))
+
+;; (define-key purpose-mode-map (kbd "C-c C-c")
+;;  (lambda () (interactive) (purpose-switch-buffer-with-some-purpose 'edit)))
+
+;; (define-key purpose-mode-map (kbd "C-c C-d")
+;;   (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'ilist))))
+
+;; (define-key purpose-mode-map (kbd "C-c C-t")
+;;   (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'todo))))
+
+;; (purpose-compile-user-configuration)
 
 
 
@@ -1188,30 +1185,6 @@ from `after-change-functions' fixes that."
 
 (setq toggle-debug-on-quit t)
 
-;; todo mode!!!
-
-(defconst todo-mode-buffer-name "*CodeTodo*"
-  "Name of the buffer that is used to display todo entries.")
-
-(defun on-org-mode-todo-file-built (process event)
-  (find-file (concat (getenv "PWD") "/todo.org"))
-  (call-interactively 'read-only-mode))
-
-(defun build-org-mode-file-for-todo ()
-  (start-process "Building todo things" "*CodeTodo*" "bash" "-ic" "source ~/.bashrc; collecttodotags")
-  (set-process-sentinel (get-process "Building todo things") 'on-org-mode-todo-file-built))
-
-(defun todo-mode-get-buffer-create ()
-    "Return the todo-mode buffer.
-If it doesn't exist, create it."
-    (or (get-buffer todo-mode-buffer-name)
-        (let ((buffer (get-buffer-create todo-mode-buffer-name)))
-          (with-current-buffer buffer
-            (org-mode)
-            (build-org-mode-file-for-todo)
-            (pop-to-buffer todo-mode-buffer-name))
-          buffer)))
-
 ;; resizing windows
 
 (global-set-key "\C-c+" (lambda () (interactive) (enlarge-window +20)))
@@ -1226,25 +1199,6 @@ If it doesn't exist, create it."
       (switch-to-buffer (other-buffer (current-buffer) 1)))
 
 (global-set-key (kbd "C-c b") 'switch-to-previous-buffer)
-
-(defun get-only-one-buffer-with-purpose (purpose)
-  "Get buffers wih purpose"
-  (buffer-name (nth 0 (purpose-buffers-with-purpose purpose))))
-
-(define-key purpose-mode-map (kbd "C-c C-f")
-  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'dired))))
-
-(define-key purpose-mode-map (kbd "C-c C-l")
-  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'buffers))))
-
-(define-key purpose-mode-map (kbd "C-c C-c")
-  (lambda () (interactive) (purpose-switch-buffer-with-some-purpose 'edit)))
-
-(define-key purpose-mode-map (kbd "C-c C-d")
-  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'ilist))))
-
-(define-key purpose-mode-map (kbd "C-c C-t")
-  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'todo))))
 
 (define-key purpose-mode-map (kbd "C-c C-g") 'goto-line)
 
@@ -1325,6 +1279,3 @@ version 2016-01-28"
 (setq ropemacs-enable-shortcuts nil) (setq ropemacs-local-prefix "C-c C-p")
 
 (global-set-key (kbd "C-i") buffer-file-name)
-
-(require 'neotree)
-(set 'neo-window-fixed-size nil)
