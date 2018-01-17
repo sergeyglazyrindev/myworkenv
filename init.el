@@ -1031,51 +1031,6 @@ from `after-change-functions' fixes that."
   :init (global-smartscan-mode t)
 )
 
-;; dired setup
-(eval-after-load 'dired
-  '(progn
-     (define-key dired-mode-map (kbd "c") 'my-dired-create-file)
-     (defun create-new-file (file-list)
-       (defun exsitp-untitled-x (file-list cnt)
-         (while (and (car file-list) (not (string= (car file-list) (concat "untitled" (number-to-string cnt) ".txt"))))
-           (setq file-list (cdr file-list)))
-         (car file-list))
-
-       (defun exsitp-untitled (file-list)
-         (while (and (car file-list) (not (string= (car file-list) "untitled.txt")))
-           (setq file-list (cdr file-list)))
-         (car file-list))
-
-       (if (not (exsitp-untitled file-list))
-           "untitled.txt"
-         (let ((cnt 2))
-           (while (exsitp-untitled-x file-list cnt)
-             (setq cnt (1+ cnt)))
-           (concat "untitled" (number-to-string cnt) ".txt")
-           )
-         )
-       )
-     (defun my-dired-create-file (file)
-       (interactive
-        (list (read-file-name "Create file: " (concat (dired-current-directory) (create-new-file (directory-files (dired-current-directory))))))
-        )
-       (write-region "" nil (expand-file-name file) t) 
-       (dired-add-file file)
-       (revert-buffer)
-       (dired-goto-file (expand-file-name file))
-       )
-     )
-  )
-
-(load "dired" nil t)
-(define-key dired-mode-map (kbd "a") 'dired-find-alternate-file)
-;;(define-key dired-mode-map (kbd "RET") 'dired-find-file)
-(add-hook 'dired-mode-hook (lambda ()  (dired-hide-details-mode 1)))
-(setq dired-omit-mode t)
-(setq-default dired-omit-files-p t) ; this is buffer-local variable
-(setq dired-omit-files "^\\.$\\|\\.pdf$\\|\\.pyc$\\|\\.tex$\\|\\.egg-info$\\|^__pycache__$")
-
-
 ;; window-purpose
 (require 'window-purpose)
 
@@ -1097,35 +1052,22 @@ from `after-change-functions' fixes that."
   "Get buffers wih purpose"
   (buffer-name (nth 0 (purpose-buffers-with-purpose purpose))))
 
-;; (mapc (lambda (map)
-;;	(define-key purpose-mode-map (kbd (concat "C-c C-" (cadr map)))
-;;          (funcall (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'dired))) "dired")))
-;;            '(("f" "dired")
-;;	      ("l" "buffers")
-;;	      ("d" "ilist")
-;;	      ("t" "todo")))
+(define-key purpose-mode-map (kbd "C-c C-f")
+  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'Neotree))))
 
-;; (setq diredkey "f")
-;; (setq diredmode "dired")
-;; (define-key purpose-mode-map (kbd (concat "C-c C-" diredkey))
-;;  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose diredmode))))
- 
-;; (define-key purpose-mode-map (kbd "C-c C-l")
-;;   (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'buffers))))
+(define-key purpose-mode-map (kbd "C-c C-l")
+  (lambda () (interactive) (purpose-switch-buffer (get-only-one-buffer-with-purpose 'buffers))))
 
-;; (define-key purpose-mode-map (kbd "C-c C-c")
-;;  (lambda () (interactive) (purpose-switch-buffer-with-some-purpose 'edit)))
+(define-key purpose-mode-map (kbd "C-c C-c")
+  (lambda () (interactive) (purpose-switch-buffer-with-some-purpose 'edit)))
 
-;; (define-key purpose-mode-map (kbd "C-c C-d")
-;;   (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'ilist))))
+(define-key purpose-mode-map (kbd "C-c C-d")
+  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'ilist))))
 
-;; (define-key purpose-mode-map (kbd "C-c C-t")
-;;   (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'todo))))
+(define-key purpose-mode-map (kbd "C-c C-t")
+  (lambda () (interactive)  (purpose-switch-buffer (get-only-one-buffer-with-purpose 'todo))))
 
-;; (purpose-compile-user-configuration)
-
-
-
+;; window-purpose
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Start environment
